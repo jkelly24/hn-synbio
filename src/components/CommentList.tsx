@@ -2,6 +2,7 @@
 
 import CommentVoteButton from './CommentVoteButton'
 import ReplyForm from './ReplyForm'
+import DeleteButton from './DeleteButton'
 import { useState } from 'react'
 
 interface Comment {
@@ -20,6 +21,7 @@ interface CommentListProps {
   comments: Comment[]
   isLoggedIn: boolean
   postId: string
+  isAdmin?: boolean
 }
 
 interface CommentItemProps {
@@ -27,9 +29,10 @@ interface CommentItemProps {
   isLoggedIn: boolean
   postId: string
   depth?: number
+  isAdmin?: boolean
 }
 
-function CommentItem({ comment, isLoggedIn, postId, depth = 0 }: CommentItemProps) {
+function CommentItem({ comment, isLoggedIn, postId, depth = 0, isAdmin = false }: CommentItemProps) {
   const [showReplyForm, setShowReplyForm] = useState(false)
   const maxDepth = 2 // 0, 1, 2 = 3 levels total
 
@@ -87,6 +90,12 @@ function CommentItem({ comment, isLoggedIn, postId, depth = 0 }: CommentItemProp
                   </button>
                 </>
               )}
+              {isAdmin && (
+                <>
+                  <span>•</span>
+                  <DeleteButton type="comment" id={comment.id} />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -113,6 +122,7 @@ function CommentItem({ comment, isLoggedIn, postId, depth = 0 }: CommentItemProp
               isLoggedIn={isLoggedIn}
               postId={postId}
               depth={depth + 1}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
@@ -121,7 +131,7 @@ function CommentItem({ comment, isLoggedIn, postId, depth = 0 }: CommentItemProp
   )
 }
 
-export default function CommentList({ comments, isLoggedIn, postId }: CommentListProps) {
+export default function CommentList({ comments, isLoggedIn, postId, isAdmin = false }: CommentListProps) {
   if (comments.length === 0) {
     return (
       <div className="text-sm text-gray-500 italic">
@@ -138,6 +148,7 @@ export default function CommentList({ comments, isLoggedIn, postId }: CommentLis
           comment={comment}
           isLoggedIn={isLoggedIn}
           postId={postId}
+          isAdmin={isAdmin}
         />
       ))}
     </div>

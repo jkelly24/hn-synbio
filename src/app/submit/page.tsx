@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import Link from 'next/link'
 
 async function createPost(formData: FormData) {
   'use server'
@@ -57,61 +58,102 @@ export default async function SubmitPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-6">
-      <h1 className="text-2xl font-bold mb-6">Submit a Post</h1>
-      
-      <form action={createPost} className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium mb-2">
-            Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            required
-            maxLength={80}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter post title (max 80 characters)"
-          />
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div>
+              <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700">
+                SynBio News
+              </Link>
+              <p className="text-sm text-gray-600 mt-1">Submit a new post</p>
+            </div>
+            <Link
+              href="/"
+              className="text-gray-600 hover:text-gray-900 font-medium"
+            >
+              ← Back to Home
+            </Link>
+          </div>
         </div>
+      </header>
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium mb-2">
-            Description *
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            required
-            maxLength={500}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Describe your post (max 500 characters)"
-          />
+      {/* Main Content */}
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Submit a Post</h1>
+            <p className="text-gray-600 mb-8">Share something interesting with the SynBio community.</p>
+            
+            <form action={createPost} className="space-y-6">
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                  Title *
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  maxLength={80}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                  placeholder="Enter a descriptive title (max 80 characters)"
+                />
+                <p className="text-xs text-gray-500 mt-1">Keep it clear and engaging</p>
+              </div>
+
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  maxLength={500}
+                  rows={5}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 resize-vertical"
+                  placeholder="Describe what you're sharing and why it's interesting (max 500 characters)"
+                />
+                <p className="text-xs text-gray-500 mt-1">Provide context and explain why this matters</p>
+              </div>
+
+              <div>
+                <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+                  URL (optional)
+                </label>
+                <input
+                  type="url"
+                  id="url"
+                  name="url"
+                  pattern="https://.*"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                  placeholder="https://example.com/article"
+                />
+                <p className="text-xs text-gray-500 mt-1">Link to an article, paper, or resource (must start with https://)</p>
+              </div>
+
+              <div className="pt-4 border-t border-gray-200">
+                <div className="flex space-x-4">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200"
+                  >
+                    Submit Post
+                  </button>
+                  <Link
+                    href="/"
+                    className="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+                  >
+                    Cancel
+                  </Link>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-
-        <div>
-          <label htmlFor="url" className="block text-sm font-medium mb-2">
-            URL (optional)
-          </label>
-          <input
-            type="url"
-            id="url"
-            name="url"
-            pattern="https://.*"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="https://example.com"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Submit Post
-        </button>
-      </form>
+      </main>
     </div>
   )
 }
