@@ -1,62 +1,75 @@
-import { signIn } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { redirect } from 'next/navigation'
+import { signIn } from '@/lib/auth'
 
-export default function LoginPage() {
-  async function handleLogin(formData: FormData) {
-    "use server"
-    
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    
-    const result = await signIn("credentials", {
+async function authenticate(formData: FormData) {
+  'use server'
+  
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+
+  if (!email || !password) {
+    throw new Error('Email and password are required')
+  }
+
+  try {
+    const result = await signIn('credentials', {
       email,
       password,
       redirect: false,
     })
     
     if (result?.error) {
-      // TODO: Handle login errors
-      console.log("Login failed")
-    } else {
-      redirect("/")
+      throw new Error('Invalid credentials')
     }
+  } catch (error) {
+    throw new Error('Invalid email or password')
   }
+  
+  // Redirect after successful authentication
+  redirect('/')
+}
 
+export default function LoginPage() {
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">Login</h1>
-      <form action={handleLogin} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
         </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-        >
-          Login
-        </button>
-      </form>
+        <form className="mt-8 space-y-6" action={authenticate}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <input
+                name="email"
+                type="email"
+                required
+                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+              />
+            </div>
+            <div>
+              <input
+                name="password"
+                type="password"
+                required
+                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+            >
+              Sign in
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
