@@ -7,7 +7,7 @@ import Link from 'next/link'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SynBio News',
+  title: 'SynBioNews',
   description: 'Hacker News for Synthetic Biology',
 }
 
@@ -24,7 +24,7 @@ async function Navigation() {
       <div className="max-w-4xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="text-xl font-bold text-gray-900">
-            SynBio News
+            SynBioNews
           </Link>
           
           <div className="flex items-center space-x-4">
@@ -71,6 +71,34 @@ async function Navigation() {
   )
 }
 
+function Footer() {
+  return (
+    <footer className="bg-gray-50 border-t border-gray-200 mt-16">
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-gray-600">
+            © 2025 SynBioNews. A community for synthetic biology news and discussion.
+          </div>
+          <div className="flex space-x-6">
+            <Link
+              href="/privacy"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              Terms
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -81,6 +109,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Navigation />
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   )
