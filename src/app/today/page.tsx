@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export const revalidate = 60 // 60 seconds as per PRD
 
-export default async function HomePage() {
+export default async function TodayPage() {
   const session = await auth()
   const isAdmin = await isCurrentUserAdmin()
   

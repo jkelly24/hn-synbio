@@ -7,11 +7,25 @@ async function createPost(formData: FormData) {
   'use server'
   
   const session = await auth()
-  console.log('Session in server action:', session)
-  console.log('User ID:', session?.user?.id)
+  console.log('Session:', session)
   
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
     throw new Error('You must be logged in to submit a post')
+  }
+
+  console.log('Looking for user with email:', session.user.email)
+
+  // Find the user in our database by email
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  console.log('Found user:', user)
+
+  if (!user) {
+    // User session exists but no database record - redirect to signup
+    console.log('User not found in database, redirecting to signup')
+    redirect('/signup')
   }
 
   const title = formData.get('title') as string
@@ -40,10 +54,11 @@ async function createPost(formData: FormData) {
         title,
         description,
         url: url || null,
-        userId: session.user.id,
+        userId: user.id,
       },
     })
   } catch (error) {
+    console.error('Database error:', error)
     throw new Error('Failed to create post')
   }
 
